@@ -10,6 +10,11 @@
 
 @interface ViewController : UIViewController
 
+@property (nonatomic,retain) UISegmentedControl *dieSelector;
+
+@property (nonatomic,retain) UIButton *rollButton;
+
+-(void) pushDieSelector;
 
 @end
 

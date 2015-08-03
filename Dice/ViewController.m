@@ -12,6 +12,7 @@
     CGRect screenRect;
     CGFloat screenWidth;
     CGFloat screenHeight;
+    int mainRunning;
     
 }
 
@@ -207,7 +208,39 @@
     
 }
 
+
+-(IBAction)pushRollButton2:(id)sender{
+    
+    if (self.numberOfFlips==0) {
+        self.numberOfFlips = arc4random_uniform(20) + 15;
+    }
+    else {
+        self.numberOfFlips--;
+    }
+    
+    [UIView animateWithDuration:0.1 delay:0.1 options:UIViewAnimationOptionTransitionFlipFromRight animations:^{
+        
+        int no = arc4random_uniform(6);
+        while(no==self.startingSide)no = arc4random_uniform(6);
+        self.startingSide = no;
+        
+        for (int k = 0; k < self.arrayOfSides.count; k++) {
+            
+            if(self.startingSide==k)[[self.arrayOfSides objectAtIndex:k] setBackgroundColor:  [UIColor redColor]];
+            else [[self.arrayOfSides objectAtIndex:k] setBackgroundColor:  [UIColor whiteColor]];
+            
+        }
+        
+    } completion:^(BOOL finished) {
+        [NSThread sleepForTimeInterval:0.2];
+        if(self.numberOfFlips>0)
+            [self pushRollButton:nil];
+    }];
+}
+
+
 -(IBAction)pushRollButton:(id)sender{
+    
     if (self.dieSelector.selectedSegmentIndex == 0){
         
         // Randomize starting side and set to j for readability
@@ -286,7 +319,5 @@
         NSLog(@"Die landed on %li", self.result);
         self.resultLabel.text = [[self.arrayOfSides objectAtIndex:j] text];
     }
-    
-    
 }
 @end

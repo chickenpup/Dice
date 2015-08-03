@@ -16,6 +16,8 @@
 @property (nonatomic,retain) UILabel *side4;
 @property (nonatomic,retain) UILabel *side5;
 @property (nonatomic,retain) UILabel *side6;
+@property (nonatomic,retain) UILabel *resultLabel;
+
 
 @property long result;
 

@@ -32,8 +32,7 @@
     [self createDieSelector];
     [self createRollButton];
     [self createDie];
-    
-    self.arrayOfSides = [[NSMutableArray alloc]init];
+    [self createResultLabel];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -48,7 +47,7 @@
     
     // Set default selected segment
     self.dieSelector.selectedSegmentIndex = 0;
-
+    
     // Add action to dieSelector
     [self.dieSelector addTarget:self action:@selector(pushDieSelector:) forControlEvents:UIControlEventValueChanged];
     
@@ -83,11 +82,11 @@
     self.side5= [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2 - 25, 280, 50, 20)];
     self.side6= [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2 - 25, 310, 50, 20)];
     
-    self.side1.text = @"1";
+    self.side1.text = @"Heads";
     self.side1.backgroundColor = [UIColor whiteColor];
     self.side1.textAlignment = NSTextAlignmentCenter;
     
-    self.side2.text = @"2";
+    self.side2.text = @"Tails";
     self.side2.backgroundColor = [UIColor whiteColor];
     self.side2.textAlignment = NSTextAlignmentCenter;
     
@@ -109,19 +108,34 @@
     
     [self.view addSubview:self.side1];
     [self.view addSubview:self.side2];
-//    [self.view addSubview:self.side3];
-//    [self.view addSubview:self.side4];
-//    [self.view addSubview:self.side5];
-//    [self.view addSubview:self.side6];
+    //    [self.view addSubview:self.side3];
+    //    [self.view addSubview:self.side4];
+    //    [self.view addSubview:self.side5];
+    //    [self.view addSubview:self.side6];
+    
+    // Create arrayOfSides and fill it with default coin sides
+    self.arrayOfSides = [[NSMutableArray alloc]init];
+    [self.arrayOfSides addObject:self.side1];
+    [self.arrayOfSides addObject:self.side2];
+    
+    
 }
 
+-(void)createResultLabel {
+    self.resultLabel = [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2 - 50, 350, 100, 60)];
+    self.resultLabel.textAlignment = NSTextAlignmentCenter;
+    self.resultLabel.backgroundColor = [UIColor greenColor];
+    self.resultLabel.font = [UIFont fontWithName:@"Helvetica" size:18];
+    
+    [self.view addSubview:self.resultLabel];
+}
 
 -(IBAction)pushDieSelector:(id)sender{
     switch (((UISegmentedControl *)sender).selectedSegmentIndex) {
         case 0:
             // Set rollButton's title appropriately
             [self.rollButton setTitle:@"Flip" forState:UIControlStateNormal];
-
+            
             // Remove all labels from superview
             [self.side1 removeFromSuperview];
             [self.side2 removeFromSuperview];
@@ -132,6 +146,10 @@
             
             // Remove all objects from array
             [self.arrayOfSides removeAllObjects];
+            
+            // Change labels 1 and 2 to be heads/tails
+            self.side1.text = @"Heads";
+            self.side2.text = @"Tails";
             
             // Add desired labels to view
             [self.view addSubview:self.side1];
@@ -156,6 +174,10 @@
             
             // Remove all objects from array
             [self.arrayOfSides removeAllObjects];
+            
+            // Change labels 1 and 2 to be numeric
+            self.side1.text = @"1";
+            self.side2.text = @"2";
             
             // Add desired labels to view
             [self.view addSubview:self.side1];
@@ -187,9 +209,9 @@
 
 -(IBAction)pushRollButton:(id)sender{
     if (self.dieSelector.selectedSegmentIndex == 0){
-       
+        
         // Randomize starting side and set to j for readability
-        self.startingSide = arc4random_uniform(self.currentNumberOfSides);
+        self.startingSide = arc4random_uniform(2);
         long j = self.startingSide;
         
         // Randomize the number of flips
@@ -202,7 +224,9 @@
             if (i != self.numberOfFlips){
                 currentSide.backgroundColor = [UIColor whiteColor];
             }
-            
+            if (i == self.numberOfFlips) {
+                break;
+            }
             j++;
             
             if (j > self.arrayOfSides.count - 1) {
@@ -210,13 +234,15 @@
             }
         }
         
-        self.result = j;
-        if (self.result == 0) {
+        if (j == 0) {
             NSLog(@"Heads");
+            self.resultLabel.text = @"Heads";
         } else {
             NSLog(@"Tails");
-            
+            self.resultLabel.text = @"Tails";
         }
+        
+        
         
     } else {
         
@@ -230,18 +256,23 @@
             self.arrayOfSides = randomArray;
         }
         
-
-        self.startingSide = arc4random_uniform(self.currentNumberOfSides);
+        // Randomize starting side and set to j for readability
+        self.startingSide = arc4random_uniform(6);
         long j = self.startingSide;
         
+        // Randomize the number of flips
         self.numberOfFlips = arc4random_uniform(20) + 15;
         
+        // Loop for each flip
         for (int i = 0; i <= self.numberOfFlips; i++) {
             
             UILabel *currentSide  = [self.arrayOfSides objectAtIndex:j];
             currentSide.backgroundColor = [UIColor redColor];
             if (i != self.numberOfFlips){
                 currentSide.backgroundColor = [UIColor whiteColor];
+            }
+            if (i == self.numberOfFlips) {
+                break;
             }
             
             j++;
@@ -251,9 +282,9 @@
             }
         }
         
-        // This needs work. self.result isn't the correct number
         self.result = [[[self.arrayOfSides objectAtIndex:j] text] integerValue];
         NSLog(@"Die landed on %li", self.result);
+        self.resultLabel.text = [[self.arrayOfSides objectAtIndex:j] text];
     }
     
     

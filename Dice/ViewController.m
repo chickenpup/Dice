@@ -21,6 +21,7 @@
 @implementation ViewController
 
 -(void) loadView {
+    
     screenRect = [[UIScreen mainScreen] bounds];
     screenWidth = screenRect.size.width;
     screenHeight = screenRect.size.height;
@@ -41,6 +42,55 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
+    
+    [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+    
+    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        // Code here will execute before the rotation begins.
+        // Equivalent to placing it in the deprecated method -[willRotateToInterfaceOrientation:duration:]
+        NSArray *viewsToRemove = [self.view subviews];
+        
+        screenRect = [[UIScreen mainScreen] bounds];
+        screenWidth = screenRect.size.width;
+        screenHeight = screenRect.size.height;
+        
+        if (screenHeight > screenWidth) {
+            // Portrait
+            
+            for (UIView *v in viewsToRemove) {
+                [v removeFromSuperview];
+            }
+            
+            [self createDieSelector];
+            [self createRollButton];
+            [self createDie];
+            [self createResultLabel];
+            
+        } else {
+            // Landscape
+            
+            for (UIView *v in viewsToRemove) {
+                [v removeFromSuperview];
+            }
+            
+            [self createDieSelector];
+            [self createRollButton];
+            [self createDie];
+            [self createResultLabel];
+            
+            
+        }
+        
+        
+        
+    } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+        
+        // Code here will execute after the rotation has finished.
+        // Equivalent to placing it in the deprecated method -[didRotateFromInterfaceOrientation:]
+        
+    }];
+}
 
 -(void) createDieSelector {
     // Init dieSelector
@@ -107,6 +157,7 @@
     self.side6.backgroundColor = [UIColor whiteColor];
     self.side6.textAlignment = NSTextAlignmentCenter;
     
+    // Only add sides1 and 2 because default state on launch is coin
     [self.view addSubview:self.side1];
     [self.view addSubview:self.side2];
     //    [self.view addSubview:self.side3];
@@ -201,11 +252,9 @@
             
             break;
             
-            
         default:
             break;
     }
-    
 }
 
 
@@ -274,8 +323,6 @@
             NSLog(@"Tails");
             self.resultLabel.text = @"Tails";
         }
-        
-        
         
     } else {
         

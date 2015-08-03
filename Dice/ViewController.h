@@ -32,6 +32,7 @@
 @property (nonatomic,retain) UIButton *rollButton;
 
 -(void) pushDieSelector;
+-(void) switchColor;
 
 @end
 

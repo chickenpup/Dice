@@ -44,18 +44,21 @@
 
 -(void) createDieSelector {
     // Init dieSelector
-    self.dieSelector = [[[UISegmentedControl alloc] initWithFrame:CGRectMake(screenWidth/2, 60, 200, 40) ] initWithItems:[NSArray arrayWithObjects:@"2",@"6", nil]];
+    self.dieSelector = [[[UISegmentedControl alloc] initWithFrame:CGRectMake(screenWidth/2 - 44, 60, 0, 40) ] initWithItems:[NSArray arrayWithObjects:@"Coin",@"Die", nil]];
     
-    
+    // Set default selected segment
+    self.dieSelector.selectedSegmentIndex = 0;
+
     // Add action to dieSelector
     [self.dieSelector addTarget:self action:@selector(pushDieSelector:) forControlEvents:UIControlEventValueChanged];
     
     
     // Init Label for selector prompting user input
-    UILabel *dieSelectorLabel = [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/4, 20, 200, 40)];
-    dieSelectorLabel.text = @"Select number of sides";
+    UILabel *dieSelectorLabel = [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2 - 100, 20, 200, 40)];
+    dieSelectorLabel.text = @"Flip a coin or a roll a die?";
     dieSelectorLabel.textColor = [UIColor whiteColor];
     dieSelectorLabel.textAlignment = NSTextAlignmentCenter;
+    
     
     // Add selector and label to view
     [self.view addSubview:self.dieSelector];
@@ -64,21 +67,21 @@
 }
 
 -(void)createRollButton {
-    self.rollButton = [[UIButton alloc] initWithFrame:CGRectMake(screenWidth/2, 100, 100, 40)];
+    self.rollButton = [[UIButton alloc] initWithFrame:CGRectMake(screenWidth/2 - 50, 100, 100, 40)];
     [self.rollButton setBackgroundColor:[UIColor blueColor]];
-    [self.rollButton setTitle:@"Roll" forState:UIControlStateNormal];
+    [self.rollButton setTitle:@"Flip" forState:UIControlStateNormal];
     [self.rollButton addTarget:self action:@selector(pushRollButton:) forControlEvents:UIControlEventTouchUpInside];
     
     [self.view addSubview:self.rollButton];
 }
 
 -(void)createDie {
-    self.side1= [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2, 160, 50, 20)];
-    self.side2= [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2, 190, 50, 20)];
-    self.side3= [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2, 220, 50, 20)];
-    self.side4= [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2, 250, 50, 20)];
-    self.side5= [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2, 280, 50, 20)];
-    self.side6= [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2, 310, 50, 20)];
+    self.side1= [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2 - 25, 160, 50, 20)];
+    self.side2= [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2 - 25, 190, 50, 20)];
+    self.side3= [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2 - 25, 220, 50, 20)];
+    self.side4= [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2 - 25, 250, 50, 20)];
+    self.side5= [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2 - 25, 280, 50, 20)];
+    self.side6= [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2 - 25, 310, 50, 20)];
     
     self.side1.text = @"1";
     self.side1.backgroundColor = [UIColor whiteColor];
@@ -106,17 +109,19 @@
     
     [self.view addSubview:self.side1];
     [self.view addSubview:self.side2];
-    [self.view addSubview:self.side3];
-    [self.view addSubview:self.side4];
-    [self.view addSubview:self.side5];
-    [self.view addSubview:self.side6];
+//    [self.view addSubview:self.side3];
+//    [self.view addSubview:self.side4];
+//    [self.view addSubview:self.side5];
+//    [self.view addSubview:self.side6];
 }
 
 
 -(IBAction)pushDieSelector:(id)sender{
     switch (((UISegmentedControl *)sender).selectedSegmentIndex) {
         case 0:
-            
+            // Set rollButton's title appropriately
+            [self.rollButton setTitle:@"Flip" forState:UIControlStateNormal];
+
             // Remove all labels from superview
             [self.side1 removeFromSuperview];
             [self.side2 removeFromSuperview];
@@ -142,6 +147,8 @@
             break;
             
         case 1:
+            // Set rollButton's title appropriately
+            [self.rollButton setTitle:@"Roll" forState:UIControlStateNormal];
             
             // Remove all labels from superview
             [self.side1 removeFromSuperview];
@@ -166,17 +173,6 @@
             [self.arrayOfSides addObject:self.side5];
             [self.arrayOfSides addObject:self.side6];
             
-            if (self.arrayOfSides){
-                NSMutableArray *randomArray = [NSMutableArray arrayWithArray:self.arrayOfSides];
-                
-                for (NSUInteger i = randomArray.count - 1; i > 0; --i) {
-                    [randomArray exchangeObjectAtIndex:i withObjectAtIndex:arc4random_uniform((int32_t)(i + 1))];
-                }
-                
-                
-                self.arrayOfSides = randomArray;
-            }
-            
             // Set #sides property
             self.currentNumberOfSides = 6;
             
@@ -190,13 +186,16 @@
 }
 
 -(IBAction)pushRollButton:(id)sender{
-    if (self.currentNumberOfSides == 2){
-        
+    if (self.dieSelector.selectedSegmentIndex == 0){
+       
+        // Randomize starting side and set to j for readability
         self.startingSide = arc4random_uniform(self.currentNumberOfSides);
         long j = self.startingSide;
         
+        // Randomize the number of flips
         self.numberOfFlips = arc4random_uniform(20) + 15;
         
+        // Loop for each flip
         for (int i = 0; i <= self.numberOfFlips; i++) {
             UILabel *currentSide  = [self.arrayOfSides objectAtIndex:j];
             currentSide.backgroundColor = [UIColor redColor];
@@ -209,8 +208,6 @@
             if (j > self.arrayOfSides.count - 1) {
                 j = 0;
             }
-            
-            
         }
         
         self.result = j;
@@ -220,15 +217,43 @@
             NSLog(@"Tails");
             
         }
-    }
-    
-    else if (self.currentNumberOfSides == 6) {
         
+    } else {
+        
+        // Create a new array randomly sorted from regular array, then reassign regular array to random array. The purpose to to emulate the randomness of a die's bouncing pattern.
+        if (self.arrayOfSides){
+            NSMutableArray *randomArray = [NSMutableArray arrayWithArray:self.arrayOfSides];
+            
+            for (NSUInteger i = randomArray.count - 1; i > 0; --i) {
+                [randomArray exchangeObjectAtIndex:i withObjectAtIndex:arc4random_uniform((int32_t)(i + 1))];
+            }
+            self.arrayOfSides = randomArray;
+        }
+        
+
         self.startingSide = arc4random_uniform(self.currentNumberOfSides);
-        self.numberOfFlips = arc4random_uniform(6);
+        long j = self.startingSide;
         
+        self.numberOfFlips = arc4random_uniform(20) + 15;
         
+        for (int i = 0; i <= self.numberOfFlips; i++) {
+            
+            UILabel *currentSide  = [self.arrayOfSides objectAtIndex:j];
+            currentSide.backgroundColor = [UIColor redColor];
+            if (i != self.numberOfFlips){
+                currentSide.backgroundColor = [UIColor whiteColor];
+            }
+            
+            j++;
+            
+            if (j > self.arrayOfSides.count - 1) {
+                j = 0;
+            }
+        }
         
+        // This needs work. self.result isn't the correct number
+        self.result = [[[self.arrayOfSides objectAtIndex:j] text] integerValue];
+        NSLog(@"Die landed on %li", self.result);
     }
     
     

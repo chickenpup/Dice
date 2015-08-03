@@ -197,10 +197,15 @@
         
         self.numberOfFlips = arc4random_uniform(20) + 15;
         
-        for (int i = 0; i < self.numberOfFlips; i++) {
+        for (int i = 0; i <= self.numberOfFlips; i++) {
             UILabel *currentSide  = [self.arrayOfSides objectAtIndex:j];
             currentSide.backgroundColor = [UIColor redColor];
+            if (i != self.numberOfFlips){
+                currentSide.backgroundColor = [UIColor whiteColor];
+            }
+            
             j++;
+            
             if (j > self.arrayOfSides.count - 1) {
                 j = 0;
             }
@@ -208,8 +213,13 @@
             
         }
         
-        self.result = j + 1;
-        NSLog(@"%li", self.result);
+        self.result = j;
+        if (self.result == 0) {
+            NSLog(@"Heads");
+        } else {
+            NSLog(@"Tails");
+            
+        }
     }
     
     else if (self.currentNumberOfSides == 6) {

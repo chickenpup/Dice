@@ -17,6 +17,8 @@
 @property (nonatomic,retain) UILabel *side5;
 @property (nonatomic,retain) UILabel *side6;
 @property (nonatomic,retain) UILabel *resultLabel;
+@property (nonatomic,retain) UILabel *dieSelectorLabel;
+@property BOOL screenIsPortrait;
 
 
 @property long result;

@@ -13,7 +13,6 @@
     CGFloat screenWidth;
     CGFloat screenHeight;
     int mainRunning;
-    
 }
 
 @end
@@ -25,6 +24,8 @@
     screenRect = [[UIScreen mainScreen] bounds];
     screenWidth = screenRect.size.width;
     screenHeight = screenRect.size.height;
+    
+    self.screenIsPortrait = YES;
     
     self.view = [[UIView alloc]initWithFrame:screenRect];
 }
@@ -49,36 +50,53 @@
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         // Code here will execute before the rotation begins.
         // Equivalent to placing it in the deprecated method -[willRotateToInterfaceOrientation:duration:]
-        NSArray *viewsToRemove = [self.view subviews];
         
         screenRect = [[UIScreen mainScreen] bounds];
         screenWidth = screenRect.size.width;
         screenHeight = screenRect.size.height;
         
         if (screenHeight > screenWidth) {
+            
             // Portrait
             
-            for (UIView *v in viewsToRemove) {
-                [v removeFromSuperview];
-            }
+            self.screenIsPortrait = YES;
             
-            [self createDieSelector];
-            [self createRollButton];
-            [self createDie];
-            [self createResultLabel];
+            self.dieSelectorLabel.frame = CGRectMake(screenWidth/2 - 100, 20, 200, 40);
+            self.dieSelector.frame = CGRectMake(screenWidth/2 - 50, 60, 100, 30);
+            self.rollButton.frame = CGRectMake(screenWidth/2 - 50, 100, 100, 40);
+            
+            self.side1.frame = CGRectMake(screenWidth/2 - 30, 160, 60, 20);
+            self.side2.frame = CGRectMake(screenWidth/2 - 30, 190, 60, 20);
+            self.side3.frame = CGRectMake(screenWidth/2 - 30, 220, 60, 20);
+            self.side4.frame = CGRectMake(screenWidth/2 - 30, 250, 60, 20);
+            self.side5.frame = CGRectMake(screenWidth/2 - 30, 280, 60, 20);
+            self.side6.frame = CGRectMake(screenWidth/2 - 30, 310, 60, 20);
+            
+            self.resultLabel.frame = CGRectMake(screenWidth/2 - 100, 350, 200, 134);
             
         } else {
+            
             // Landscape
             
-            for (UIView *v in viewsToRemove) {
-                [v removeFromSuperview];
+            self.screenIsPortrait = NO;
+            
+            self.dieSelectorLabel.frame = CGRectMake(screenWidth/4 - 100, screenHeight/2 - 130, 200, 40);
+            self.dieSelector.frame = CGRectMake(screenWidth/4 - 50, screenHeight/2 - 80, 100, 30);
+            self.rollButton.frame = CGRectMake(screenWidth/4 - 50, screenHeight/2 - 20, 100, 40);
+            
+            if (self.dieSelector.selectedSegmentIndex == 0) {
+                self.side1.frame = CGRectMake(screenWidth/4 - 30, screenHeight/2 + 40, 60, 20);
+                self.side2.frame = CGRectMake(screenWidth/4 - 30, screenHeight/2 + 70, 60, 20);
+            } else {
+                self.side1.frame = CGRectMake(screenWidth/4 - 65, screenHeight/2 + 40, 60, 20);
+                self.side2.frame = CGRectMake(screenWidth/4 - 65, screenHeight/2 + 70, 60, 20);
             }
+            self.side3.frame = CGRectMake(screenWidth/4 - 65, screenHeight/2 + 100, 60, 20);
+            self.side4.frame = CGRectMake(screenWidth/4 + 5, screenHeight/2 + 40, 60, 20);
+            self.side5.frame = CGRectMake(screenWidth/4 + 5, screenHeight/2 + 70, 60, 20);
+            self.side6.frame = CGRectMake(screenWidth/4 + 5, screenHeight/2 + 100, 60, 20);
             
-            [self createDieSelector];
-            [self createRollButton];
-            [self createDie];
-            [self createResultLabel];
-            
+            self.resultLabel.frame = CGRectMake(screenWidth/2, screenHeight/2 - 125, 250, 250);
             
         }
         
@@ -94,7 +112,7 @@
 
 -(void) createDieSelector {
     // Init dieSelector
-    self.dieSelector = [[[UISegmentedControl alloc] initWithFrame:CGRectMake(screenWidth/2 - 44, 60, 0, 40) ] initWithItems:[NSArray arrayWithObjects:@"Coin",@"Die", nil]];
+    self.dieSelector = [[[UISegmentedControl alloc] initWithFrame:CGRectMake(screenWidth/2 - 50, 60, 100, 30)] initWithItems:[NSArray arrayWithObjects:@"Coin",@"Die", nil]];
     
     // Set default selected segment
     self.dieSelector.selectedSegmentIndex = 0;
@@ -104,15 +122,15 @@
     
     
     // Init Label for selector prompting user input
-    UILabel *dieSelectorLabel = [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2 - 100, 20, 200, 40)];
-    dieSelectorLabel.text = @"Flip a coin or a roll a die?";
-    dieSelectorLabel.textColor = [UIColor whiteColor];
-    dieSelectorLabel.textAlignment = NSTextAlignmentCenter;
+    self.dieSelectorLabel = [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2 - 100, 20, 200, 40)];
+    self.dieSelectorLabel.text = @"Flip a coin or a roll a die?";
+    self.dieSelectorLabel.textColor = [UIColor whiteColor];
+    self.dieSelectorLabel.textAlignment = NSTextAlignmentCenter;
     
     
     // Add selector and label to view
     [self.view addSubview:self.dieSelector];
-    [self.view addSubview:dieSelectorLabel];
+    [self.view addSubview:self.dieSelectorLabel];
     
 }
 
@@ -126,12 +144,12 @@
 }
 
 -(void)createDie {
-    self.side1= [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2 - 25, 160, 50, 20)];
-    self.side2= [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2 - 25, 190, 50, 20)];
-    self.side3= [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2 - 25, 220, 50, 20)];
-    self.side4= [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2 - 25, 250, 50, 20)];
-    self.side5= [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2 - 25, 280, 50, 20)];
-    self.side6= [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2 - 25, 310, 50, 20)];
+    self.side1= [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2 - 30, 160, 60, 20)];
+    self.side2= [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2 - 30, 190, 60, 20)];
+    self.side3= [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2 - 30, 220, 60, 20)];
+    self.side4= [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2 - 30, 250, 60, 20)];
+    self.side5= [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2 - 30, 280, 60, 20)];
+    self.side6= [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2 - 30, 310, 60, 20)];
     
     self.side1.text = @"Heads";
     self.side1.backgroundColor = [UIColor whiteColor];
@@ -173,16 +191,16 @@
     
 }
 
--(void)createResultLabel {
-    self.resultLabel = [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2 - 50, 350, 100, 60)];
+-(void) createResultLabel {
+    self.resultLabel = [[UILabel alloc] initWithFrame:CGRectMake(screenWidth/2 - 100, 350, 200, 134)];
     self.resultLabel.textAlignment = NSTextAlignmentCenter;
     self.resultLabel.backgroundColor = [UIColor greenColor];
-    self.resultLabel.font = [UIFont fontWithName:@"Helvetica" size:18];
+    self.resultLabel.font = [UIFont fontWithName:@"Helvetica" size:24];
     
     [self.view addSubview:self.resultLabel];
 }
 
--(IBAction)pushDieSelector:(id)sender{
+-(IBAction) pushDieSelector:(id)sender{
     switch (((UISegmentedControl *)sender).selectedSegmentIndex) {
         case 0:
             // Set rollButton's title appropriately
@@ -202,6 +220,11 @@
             // Change labels 1 and 2 to be heads/tails
             self.side1.text = @"Heads";
             self.side2.text = @"Tails";
+            
+            if (screenHeight < screenWidth) {
+                self.side1.frame = CGRectMake(screenWidth/4 - 30, screenHeight/2 + 40, 60, 20);
+                self.side2.frame = CGRectMake(screenWidth/4 - 30, screenHeight/2 + 70, 60, 20);
+            }
             
             // Add desired labels to view
             [self.view addSubview:self.side1];
@@ -230,6 +253,12 @@
             // Change labels 1 and 2 to be numeric
             self.side1.text = @"1";
             self.side2.text = @"2";
+            
+            if (screenHeight < screenWidth) {
+                self.side1.frame = CGRectMake(screenWidth/4 - 65, screenHeight/2 + 40, 60, 20);
+                self.side2.frame = CGRectMake(screenWidth/4 - 65, screenHeight/2 + 70, 60, 20);
+
+            }
             
             // Add desired labels to view
             [self.view addSubview:self.side1];
@@ -366,5 +395,9 @@
         NSLog(@"Die landed on %li", self.result);
         self.resultLabel.text = [[self.arrayOfSides objectAtIndex:j] text];
     }
+}
+
+-(void) arrangeView {
+    
 }
 @end

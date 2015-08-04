@@ -52,7 +52,7 @@
     
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         // Code here will execute before the rotation begins.
-       
+        
         // Call arrangeView to rearrange view objects for new orientation
         [self arrangeView];
         
@@ -86,9 +86,13 @@
 }
 
 -(void) createRollButton {
-    self.rollButton = [[UIButton alloc] init];
-    [self.rollButton setBackgroundColor:[UIColor blueColor]];
+    self.rollButton = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    self.rollButton.layer.cornerRadius = 5;
+    self.rollButton.clipsToBounds = YES;
+    [self.rollButton setBackgroundColor:[UIColor colorWithRed:0.8 green:0.5 blue:0.0 alpha:1.0]];
+    [self.rollButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
     [self.rollButton setTitle:@"Flip" forState:UIControlStateNormal];
+    self.rollButton.titleLabel.font = [UIFont fontWithName:@"Helvetica" size:20];
     [self.rollButton addTarget:self action:@selector(pushRollButton:) forControlEvents:UIControlEventTouchUpInside];
     
     [self.view addSubview:self.rollButton];
@@ -102,29 +106,55 @@
     self.side5= [[UILabel alloc] init];
     self.side6= [[UILabel alloc] init];
     
-    self.side1.text = @"Heads";
+    self.side1.text = @"👨‍👨‍👧";
     self.side1.backgroundColor = [UIColor whiteColor];
     self.side1.textAlignment = NSTextAlignmentCenter;
+    self.side1.layer.borderWidth = 1.0;
+    self.side1.layer.cornerRadius = 4;
+    self.side1.clipsToBounds = YES;
+    self.side1.tag = 1;
     
-    self.side2.text = @"Tails";
+    
+    self.side2.text = @"🐓";
     self.side2.backgroundColor = [UIColor whiteColor];
     self.side2.textAlignment = NSTextAlignmentCenter;
+    self.side2.layer.borderWidth = 1.0;
+    self.side2.layer.cornerRadius = 4;
+    self.side2.clipsToBounds = YES;
+    self.side2.tag = 2;
     
-    self.side3.text = @"3";
+    self.side3.text = @"•••";
     self.side3.backgroundColor = [UIColor whiteColor];
     self.side3.textAlignment = NSTextAlignmentCenter;
+    self.side3.layer.borderWidth = 1.0;
+    self.side3.layer.cornerRadius = 4;
+    self.side3.clipsToBounds = YES;
+    self.side3.tag = 3;
     
-    self.side4.text = @"4";
+    self.side4.text = @"•• ••";
     self.side4.backgroundColor = [UIColor whiteColor];
     self.side4.textAlignment = NSTextAlignmentCenter;
+    self.side4.layer.borderWidth = 1.0;
+    self.side4.layer.cornerRadius = 4;
+    self.side4.clipsToBounds = YES;
+    self.side4.tag = 4;
     
-    self.side5.text = @"5";
+    self.side5.text = @"•• • ••";
     self.side5.backgroundColor = [UIColor whiteColor];
     self.side5.textAlignment = NSTextAlignmentCenter;
+    self.side5.layer.borderWidth = 1.0;
+    self.side5.layer.cornerRadius = 4;
+    self.side5.clipsToBounds = YES;
+    self.side5.tag = 5;
     
-    self.side6.text = @"6";
+    self.side6.text = @"••• •••";
     self.side6.backgroundColor = [UIColor whiteColor];
     self.side6.textAlignment = NSTextAlignmentCenter;
+    self.side6.layer.borderWidth = 1.0;
+    self.side6.layer.cornerRadius = 4;
+    self.side6.clipsToBounds = YES;
+    self.side6.tag = 6;
+    
     
     // Only add sides1 and 2 because default state on launch is coin
     [self.view addSubview:self.side1];
@@ -143,6 +173,10 @@
     self.resultLabel.textAlignment = NSTextAlignmentCenter;
     self.resultLabel.backgroundColor = [UIColor colorWithRed:0.0 green:1.0 blue:0.4 alpha:1.0];
     self.resultLabel.font = [UIFont fontWithName:@"Helvetica" size:46];
+    self.resultLabel.layer.borderWidth = 1.0;
+    self.resultLabel.layer.cornerRadius = 5;
+    self.resultLabel.clipsToBounds = YES;
+    
     
     [self.view addSubview:self.resultLabel];
 }
@@ -164,8 +198,8 @@
             [self.arrayOfSides removeAllObjects];
             
             // Change labels 1 and 2 to be heads/tails
-            self.side1.text = @"Heads";
-            self.side2.text = @"Tails";
+            self.side1.text = @"👨‍👨‍👧";
+            self.side2.text = @"🐓";
             
             // Add desired labels to view
             [self.view addSubview:self.side1];
@@ -201,8 +235,8 @@
             [self.arrayOfSides removeAllObjects];
             
             // Change labels 1 and 2 to be numeric
-            self.side1.text = @"1";
-            self.side2.text = @"2";
+            self.side1.text = @"•";
+            self.side2.text = @"••";
             
             // Add desired labels to view
             [self.view addSubview:self.side1];
@@ -298,9 +332,9 @@
         }
         
         if (j == 0) {
-            self.resultLabel.text = @"Heads";
+            self.resultLabel.text = @"Heads👨‍👨‍👧";
         } else {
-            self.resultLabel.text = @"Tails";
+            self.resultLabel.text = @"Tails🐓";
         }
         
     } else {
@@ -343,7 +377,8 @@
         
         //        self.result = [[[self.arrayOfSides objectAtIndex:j] text] integerValue];
         //        NSLog(@"Die landed on %li", self.result);
-        self.resultLabel.text = [[self.arrayOfSides objectAtIndex:j] text];
+        //        self.resultLabel.text = [[self.arrayOfSides objectAtIndex:j] text];
+        self.resultLabel.text = [NSString stringWithFormat:@"%li",[[self.arrayOfSides objectAtIndex:j]tag]];
     }
 }
 
@@ -355,53 +390,69 @@
     screenWidth = screenRect.size.width;
     screenHeight = screenRect.size.height;
     
-    // Portrait Coin and Die
-    
-    if (screenWidth < screenHeight) {
+    // Portrait Coin
+    if (screenWidth < screenHeight && self.dieSelector.selectedSegmentIndex == 0) {
         self.dieSelectorLabel.frame = CGRectMake(screenWidth/2 - 100, 20, 200, 40);
         self.dieSelector.frame = CGRectMake(screenWidth/2 - 50, 60, 100, 30);
         self.rollButton.frame = CGRectMake(screenWidth/2 - 50, 110, 100, 40);
         
-        self.side1.frame = CGRectMake(screenWidth/2 - 30, 170, 60, 20);
-        self.side2.frame = CGRectMake(screenWidth/2 - 30, 200, 60, 20);
-        self.side3.frame = CGRectMake(screenWidth/2 - 30, 230, 60, 20);
-        self.side4.frame = CGRectMake(screenWidth/2 - 30, 260, 60, 20);
-        self.side5.frame = CGRectMake(screenWidth/2 - 30, 290, 60, 20);
-        self.side6.frame = CGRectMake(screenWidth/2 - 30, 320, 60, 20);
+        self.side1.frame = CGRectMake(screenWidth/2 - 30, 170, 60, 25);
+        self.side2.frame = CGRectMake(screenWidth/2 - 30, 200, 60, 25);
+        //        self.side3.frame = CGRectMake(screenWidth/2 - 30, 230, 60, 25);
+        //        self.side4.frame = CGRectMake(screenWidth/2 - 30, 260, 60, 25);
+        //        self.side5.frame = CGRectMake(screenWidth/2 - 30, 290, 60, 25);
+        //        self.side6.frame = CGRectMake(screenWidth/2 - 30, 320, 60, 25);
+        
+        self.resultLabel.frame = CGRectMake(screenWidth/2 - 100, 250, 200, 134);
+        
+    }
+    // Portrait Die
+    if (screenWidth < screenHeight&& self.dieSelector.selectedSegmentIndex == 1) {
+        self.dieSelectorLabel.frame = CGRectMake(screenWidth/2 - 100, 20, 200, 40);
+        self.dieSelector.frame = CGRectMake(screenWidth/2 - 50, 60, 100, 30);
+        self.rollButton.frame = CGRectMake(screenWidth/2 - 50, 110, 100, 40);
+        
+        self.side1.frame = CGRectMake(screenWidth/2 - 30, 170, 60, 25);
+        self.side2.frame = CGRectMake(screenWidth/2 - 30, 200, 60, 25);
+        self.side3.frame = CGRectMake(screenWidth/2 - 30, 230, 60, 25);
+        self.side4.frame = CGRectMake(screenWidth/2 - 30, 260, 60, 25);
+        self.side5.frame = CGRectMake(screenWidth/2 - 30, 290, 60, 25);
+        self.side6.frame = CGRectMake(screenWidth/2 - 30, 320, 60, 25);
         
         self.resultLabel.frame = CGRectMake(screenWidth/2 - 100, 360, 200, 134);
         
     }
+    
     // Landscape Coin
     if (screenWidth > screenHeight && self.dieSelector.selectedSegmentIndex == 0) {
         self.dieSelectorLabel.frame = CGRectMake(screenWidth/4 - 100, screenHeight/2 - 130, 200, 40);
         self.dieSelector.frame = CGRectMake(screenWidth/4 - 50, screenHeight/2 - 80, 100, 30);
         self.rollButton.frame = CGRectMake(screenWidth/4 - 50, screenHeight/2 - 20, 100, 40);
         
-        self.side1.frame = CGRectMake(screenWidth/4 - 30, screenHeight/2 + 40, 60, 20);
-        self.side2.frame = CGRectMake(screenWidth/4 - 30, screenHeight/2 + 70, 60, 20);
-        self.side3.frame = CGRectMake(screenWidth/4 - 65, screenHeight/2 + 100, 60, 20);
-        self.side4.frame = CGRectMake(screenWidth/4 + 5, screenHeight/2 + 40, 60, 20);
-        self.side5.frame = CGRectMake(screenWidth/4 + 5, screenHeight/2 + 70, 60, 20);
-        self.side6.frame = CGRectMake(screenWidth/4 + 5, screenHeight/2 + 100, 60, 20);
+        self.side1.frame = CGRectMake(screenWidth/4 - 30, screenHeight/2 + 40, 60, 25);
+        self.side2.frame = CGRectMake(screenWidth/4 - 30, screenHeight/2 + 70, 60, 25);
+        self.side3.frame = CGRectMake(screenWidth/4 - 65, screenHeight/2 + 100, 60, 25);
+        self.side4.frame = CGRectMake(screenWidth/4 + 5, screenHeight/2 + 40, 60, 25);
+        self.side5.frame = CGRectMake(screenWidth/4 + 5, screenHeight/2 + 70, 60, 25);
+        self.side6.frame = CGRectMake(screenWidth/4 + 5, screenHeight/2 + 100, 60, 25);
         
         self.resultLabel.frame = CGRectMake(screenWidth/2, screenHeight/2 - 125, 250, 250);
     }
+    
     // Landscape Die
     if (screenWidth > screenHeight && self.dieSelector.selectedSegmentIndex == 1) {
         self.dieSelectorLabel.frame = CGRectMake(screenWidth/4 - 100, screenHeight/2 - 130, 200, 40);
         self.dieSelector.frame = CGRectMake(screenWidth/4 - 50, screenHeight/2 - 80, 100, 30);
         self.rollButton.frame = CGRectMake(screenWidth/4 - 50, screenHeight/2 - 20, 100, 40);
         
-        self.side1.frame = CGRectMake(screenWidth/4 - 65, screenHeight/2 + 40, 60, 20);
-        self.side2.frame = CGRectMake(screenWidth/4 - 65, screenHeight/2 + 70, 60, 20);
-        self.side3.frame = CGRectMake(screenWidth/4 - 65, screenHeight/2 + 100, 60, 20);
-        self.side4.frame = CGRectMake(screenWidth/4 + 5, screenHeight/2 + 40, 60, 20);
-        self.side5.frame = CGRectMake(screenWidth/4 + 5, screenHeight/2 + 70, 60, 20);
-        self.side6.frame = CGRectMake(screenWidth/4 + 5, screenHeight/2 + 100, 60, 20);
+        self.side1.frame = CGRectMake(screenWidth/4 - 65, screenHeight/2 + 40, 60, 25);
+        self.side2.frame = CGRectMake(screenWidth/4 - 65, screenHeight/2 + 70, 60, 25);
+        self.side3.frame = CGRectMake(screenWidth/4 - 65, screenHeight/2 + 100, 60, 25);
+        self.side4.frame = CGRectMake(screenWidth/4 + 5, screenHeight/2 + 40, 60, 25);
+        self.side5.frame = CGRectMake(screenWidth/4 + 5, screenHeight/2 + 70, 60, 25);
+        self.side6.frame = CGRectMake(screenWidth/4 + 5, screenHeight/2 + 100, 60, 25);
         
         self.resultLabel.frame = CGRectMake(screenWidth/2, screenHeight/2 - 125, 250, 250);
     }
-    
 }
 @end

@@ -12,6 +12,7 @@
 		DC0549701B6D38FC001E294B /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = DC05496F1B6D38FC001E294B /* ViewController.m */; };
 		DC0549751B6D38FC001E294B /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DC0549741B6D38FC001E294B /* Images.xcassets */; };
 		DC0549841B6D38FC001E294B /* DiceTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DC0549831B6D38FC001E294B /* DiceTests.m */; };
+		DC9507D01B7109CF00FA7BE5 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC9507CF1B7109CF00FA7BE5 /* QuartzCore.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +37,7 @@
 		DC05497D1B6D38FC001E294B /* DiceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DiceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC0549821B6D38FC001E294B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DC0549831B6D38FC001E294B /* DiceTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DiceTests.m; sourceTree = "<group>"; };
+		DC9507CF1B7109CF00FA7BE5 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -43,6 +45,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC9507D01B7109CF00FA7BE5 /* QuartzCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -59,6 +62,7 @@
 		DC05495B1B6D38FC001E294B = {
 			isa = PBXGroup;
 			children = (
+				DC9507CF1B7109CF00FA7BE5 /* QuartzCore.framework */,
 				DC0549661B6D38FC001E294B /* Dice */,
 				DC0549801B6D38FC001E294B /* DiceTests */,
 				DC0549651B6D38FC001E294B /* Products */,
@@ -389,6 +393,7 @@
 				DC0549891B6D38FC001E294B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		DC05498A1B6D38FC001E294B /* Build configuration list for PBXNativeTarget "DiceTests" */ = {
 			isa = XCConfigurationList;
@@ -397,6 +402,7 @@
 				DC05498C1B6D38FC001E294B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

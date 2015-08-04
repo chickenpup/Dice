@@ -18,6 +18,7 @@
 @property (nonatomic,retain) UILabel *side6;
 @property (nonatomic,retain) UILabel *resultLabel;
 @property (nonatomic,retain) UILabel *dieSelectorLabel;
+
 @property BOOL screenIsPortrait;
 
 
@@ -29,14 +30,9 @@
 @property (nonatomic) NSUInteger startingSide;
 @property (nonatomic) NSUInteger numberOfFlips;
 
-
-
 @property (nonatomic,retain) UISegmentedControl *dieSelector;
 
 @property (nonatomic,retain) UIButton *rollButton;
-
--(void) pushDieSelector;
--(void) switchColor;
 
 @end
 

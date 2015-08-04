@@ -19,8 +19,9 @@
 
 @implementation ViewController
 
+#pragma mark - View loading and orientation switching
+
 -(void) loadView {
-    
     screenRect = [[UIScreen mainScreen] bounds];
     screenWidth = screenRect.size.width;
     screenHeight = screenRect.size.height;
@@ -51,12 +52,16 @@
     
     [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         // Code here will execute before the rotation begins.
+       
+        // Call arrangeView to rearrange view objects for new orientation
         [self arrangeView];
         
     } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
         // Code here will execute after the rotation has finished.
     }];
 }
+
+#pragma mark - Creating View Objects
 
 -(void) createDieSelector {
     // Init dieSelector
@@ -80,7 +85,7 @@
     
 }
 
--(void)createRollButton {
+-(void) createRollButton {
     self.rollButton = [[UIButton alloc] init];
     [self.rollButton setBackgroundColor:[UIColor blueColor]];
     [self.rollButton setTitle:@"Flip" forState:UIControlStateNormal];
@@ -89,7 +94,7 @@
     [self.view addSubview:self.rollButton];
 }
 
--(void)createDie {
+-(void) createDie {
     self.side1= [[UILabel alloc] init];
     self.side2= [[UILabel alloc] init];
     self.side3= [[UILabel alloc] init];
@@ -124,10 +129,6 @@
     // Only add sides1 and 2 because default state on launch is coin
     [self.view addSubview:self.side1];
     [self.view addSubview:self.side2];
-    //    [self.view addSubview:self.side3];
-    //    [self.view addSubview:self.side4];
-    //    [self.view addSubview:self.side5];
-    //    [self.view addSubview:self.side6];
     
     // Create arrayOfSides and fill it with default coin sides
     self.arrayOfSides = [[NSMutableArray alloc]init];
@@ -140,11 +141,13 @@
 -(void) createResultLabel {
     self.resultLabel = [[UILabel alloc] init];
     self.resultLabel.textAlignment = NSTextAlignmentCenter;
-    self.resultLabel.backgroundColor = [UIColor greenColor];
-    self.resultLabel.font = [UIFont fontWithName:@"Helvetica" size:24];
+    self.resultLabel.backgroundColor = [UIColor colorWithRed:0.0 green:1.0 blue:0.4 alpha:1.0];
+    self.resultLabel.font = [UIFont fontWithName:@"Helvetica" size:46];
     
     [self.view addSubview:self.resultLabel];
 }
+
+#pragma mark - IBAction
 
 -(IBAction) pushDieSelector:(id)sender{
     switch (((UISegmentedControl *)sender).selectedSegmentIndex) {
@@ -153,12 +156,9 @@
             [self.rollButton setTitle:@"Flip" forState:UIControlStateNormal];
             
             // Remove all labels from superview
-            [self.side1 removeFromSuperview];
-            [self.side2 removeFromSuperview];
-            [self.side3 removeFromSuperview];
-            [self.side4 removeFromSuperview];
-            [self.side5 removeFromSuperview];
-            [self.side6 removeFromSuperview];
+            for (UILabel *side in self.arrayOfSides) {
+                [side removeFromSuperview];
+            }
             
             // Remove all objects from array
             [self.arrayOfSides removeAllObjects];
@@ -175,6 +175,11 @@
             [self.arrayOfSides addObject:self.side1];
             [self.arrayOfSides addObject:self.side2];
             
+            // Set all label BGs to white (otherwise red color from previous roll will carry over)
+            for (UILabel *side in self.arrayOfSides) {
+                side.backgroundColor = [UIColor whiteColor];
+            }
+            
             // Set #sides property
             self.currentNumberOfSides = 2;
             
@@ -188,8 +193,9 @@
             [self.rollButton setTitle:@"Roll" forState:UIControlStateNormal];
             
             // Remove all labels from superview
-            [self.side1 removeFromSuperview];
-            [self.side2 removeFromSuperview];
+            for (UILabel *side in self.arrayOfSides) {
+                [side removeFromSuperview];
+            }
             
             // Remove all objects from array
             [self.arrayOfSides removeAllObjects];
@@ -213,6 +219,11 @@
             [self.arrayOfSides addObject:self.side4];
             [self.arrayOfSides addObject:self.side5];
             [self.arrayOfSides addObject:self.side6];
+            
+            // Set all label BGs to white (otherwise red color from previous roll will carry over)
+            for (UILabel *side in self.arrayOfSides) {
+                side.backgroundColor = [UIColor whiteColor];
+            }
             
             // Set #sides property
             self.currentNumberOfSides = 6;
@@ -287,10 +298,8 @@
         }
         
         if (j == 0) {
-            NSLog(@"Heads");
             self.resultLabel.text = @"Heads";
         } else {
-            NSLog(@"Tails");
             self.resultLabel.text = @"Tails";
         }
         
@@ -332,11 +341,13 @@
             }
         }
         
-        self.result = [[[self.arrayOfSides objectAtIndex:j] text] integerValue];
-        NSLog(@"Die landed on %li", self.result);
+        //        self.result = [[[self.arrayOfSides objectAtIndex:j] text] integerValue];
+        //        NSLog(@"Die landed on %li", self.result);
         self.resultLabel.text = [[self.arrayOfSides objectAtIndex:j] text];
     }
 }
+
+#pragma mark - Utility methods
 
 -(void) arrangeView {
     

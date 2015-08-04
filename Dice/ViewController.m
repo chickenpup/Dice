@@ -271,39 +271,91 @@
             break;
     }
 }
-
-
--(IBAction)pushRollButton2:(id)sender{
+-(IBAction)pushRollButton:(id)sender{
+    // If we're flipping Coin...
+    self.resultLabel.text = nil;
     
-    if (self.numberOfFlips==0) {
-        self.numberOfFlips = arc4random_uniform(20) + 15;
-    }
-    else {
-        self.numberOfFlips--;
-    }
-    
-    [UIView animateWithDuration:0.1 delay:0.1 options:UIViewAnimationOptionTransitionFlipFromRight animations:^{
-        
-        int no = arc4random_uniform(6);
-        while(no==self.startingSide)no = arc4random_uniform(6);
-        self.startingSide = no;
-        
-        for (int k = 0; k < self.arrayOfSides.count; k++) {
-            
-            if(self.startingSide==k)[[self.arrayOfSides objectAtIndex:k] setBackgroundColor:  [UIColor redColor]];
-            else [[self.arrayOfSides objectAtIndex:k] setBackgroundColor:  [UIColor whiteColor]];
-            
+    if (self.dieSelector.selectedSegmentIndex == 0) {
+        if (self.numberOfFlips == 0) {
+            self.numberOfFlips = arc4random_uniform(20) + 15;//–––––Check if it's first loop and if is generate random number
+        }
+        else {
+            self.numberOfFlips--;//––––If it's second loop, decrement self.numberOfFlips until 0
         }
         
-    } completion:^(BOOL finished) {
-        [NSThread sleepForTimeInterval:0.2];
-        if(self.numberOfFlips>0)
-            [self pushRollButton:nil];
-    }];
+        [UIView animateWithDuration:0.1 delay:0.1 options:UIViewAnimationOptionTransitionFlipFromRight animations:^{
+            
+            int no = arc4random_uniform(2);
+            while(no==self.startingSide)no = arc4random_uniform(2);
+            self.startingSide = no;
+            
+            for (int k = 0; k < self.arrayOfSides.count; k++) {
+                
+                if(self.startingSide==k)[[self.arrayOfSides objectAtIndex:k] setBackgroundColor:  [UIColor redColor]];
+                else [[self.arrayOfSides objectAtIndex:k] setBackgroundColor:  [UIColor whiteColor]];
+                
+                if (self.numberOfFlips == 0) {
+                    if (self.startingSide == 0) {
+                        self.resultLabel.text = @"Heads👨‍👨‍👧";
+                    } else {
+                        self.resultLabel.text = @"Tails🐓";
+                    }
+                    
+                }
+            }
+            
+        } completion:^(BOOL finished) {
+            [NSThread sleepForTimeInterval:0.1];
+            if(self.numberOfFlips>0)
+                [self pushRollButton:nil];
+        }];
+        
+        
+    }
+    // If we're rolling Die...
+    else {
+        // Create a new array randomly sorted from regular array, then reassign regular array to random array. The purpose to to emulate the randomness of a die's bouncing pattern.
+        if (self.arrayOfSides){
+            NSMutableArray *randomArray = [NSMutableArray arrayWithArray:self.arrayOfSides];
+            
+            for (NSUInteger i = randomArray.count - 1; i > 0; --i) {
+                [randomArray exchangeObjectAtIndex:i withObjectAtIndex:arc4random_uniform((int32_t)(i + 1))];
+            }
+            self.arrayOfSides = randomArray;
+        }
+        
+        if (self.numberOfFlips==0) {
+            self.numberOfFlips = arc4random_uniform(20) + 15;
+        } else {
+            self.numberOfFlips--;
+        }
+        
+        [UIView animateWithDuration:0.1 delay:0.1 options:UIViewAnimationOptionTransitionFlipFromRight animations:^{
+            
+            int no = arc4random_uniform(6);
+            while(no==self.startingSide)no = arc4random_uniform(6);
+            self.startingSide = no;
+            
+            for (int k = 0; k < self.arrayOfSides.count; k++) {
+                
+                if(self.startingSide==k)[[self.arrayOfSides objectAtIndex:k] setBackgroundColor:  [UIColor redColor]];
+                else [[self.arrayOfSides objectAtIndex:k] setBackgroundColor:  [UIColor whiteColor]];
+                
+                if (self.numberOfFlips == 0) {
+                    self.resultLabel.text = [NSString stringWithFormat:@"%li",[[self.arrayOfSides objectAtIndex:self.startingSide]tag]];
+                }
+                
+            }
+            
+        } completion:^(BOOL finished) {
+            [NSThread sleepForTimeInterval:0.1];
+            if(self.numberOfFlips>0)
+                [self pushRollButton:nil];
+        }];
+    }
 }
 
-
--(IBAction)pushRollButton:(id)sender{
+-(IBAction)pushRollButtonNonAnimated:(id)sender{
     
     if (self.dieSelector.selectedSegmentIndex == 0){
         
